@@ -6,6 +6,7 @@ class DefaultLayout extends StatelessWidget {
   final String? title;
   final Widget? bottomNavigationBar;
   final Widget? floatingActionButton;
+  final bool? resizeToAvoidBottomInset; // 👈 [추가]
 
   const DefaultLayout({
     required this.child,
@@ -13,6 +14,7 @@ class DefaultLayout extends StatelessWidget {
     this.title,
     this.bottomNavigationBar,
     this.floatingActionButton,
+    this.resizeToAvoidBottomInset, // 👈 [추가]
     Key? key,
   }) : super(key: key);
 
@@ -24,19 +26,20 @@ class DefaultLayout extends StatelessWidget {
       body: child,
       bottomNavigationBar: bottomNavigationBar,
       floatingActionButton: floatingActionButton,
+      resizeToAvoidBottomInset: resizeToAvoidBottomInset, // 👈 [추가]
     );
   }
 
-  AppBar? renderAppBar(){
-    if(title == null){
+  AppBar? renderAppBar() {
+    if (title == null) {
       return null;
-    }else{
+    } else {
       return AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         title: Text(
           title!,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 16.0,
             fontWeight: FontWeight.w500,
           ),

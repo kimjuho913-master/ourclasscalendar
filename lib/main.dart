@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
-  // main 함수는 기존과 동일합니다.
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -38,22 +37,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'NotoSans',
       ),
-      home: Scaffold(
-        // 앱 영역 밖의 배경색을 지정하여 깔끔하게 보입니다.
-        backgroundColor: Colors.grey[850], // 어두운 회색 배경
-        body: Center( // 앱을 화면 정중앙에 배치합니다.
-          // [핵심] AspectRatio 위젯으로 자식의 비율을 9:20으로 강제합니다.
-          child: AspectRatio(
-            aspectRatio: 9 / 20, // 가로 9, 세로 20 비율로 설정
-            // 실제 앱 콘텐츠가 들어갈 부분
-            child: Container(
-              // Container로 한번 감싸서 배경색이나 그림자 효과 등을 추가할 수 있습니다.
-              color: Colors.white, // 앱의 기본 배경색
-              child: const SplashScreen(), // 앱의 첫 화면을 여기에 넣습니다.
-            ),
-          ),
-        ),
-      ),
+      // [수정] home에 SplashScreen을 직접 연결하여 비율 고정 기능을 완전히 제거합니다.
+      home: const SplashScreen(),
     );
   }
 }
