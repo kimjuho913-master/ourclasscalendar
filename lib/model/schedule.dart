@@ -1,13 +1,16 @@
+// lib/model/schedule.dart
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Schedule {
-  final String id; // Firestore 문서 ID
+  final String id;
   final String content;
   final DateTime date;
   final int startTime;
   final int endTime;
-  final String colorHexCode; // 색상 Hex 코드 직접 저장
+  final String colorHexCode;
   final DateTime createdAt;
+  final String creator; // 👈 [추가] 작성자 필드
 
   Schedule({
     required this.id,
@@ -17,9 +20,9 @@ class Schedule {
     required this.endTime,
     required this.colorHexCode,
     required this.createdAt,
+    required this.creator, // 👈 [추가]
   });
 
-  // Firestore 데이터(Map)를 Schedule 객체로 변환
   factory Schedule.fromMap(String id, Map<String, dynamic> map) {
     return Schedule(
       id: id,
@@ -27,12 +30,12 @@ class Schedule {
       date: (map['date'] as Timestamp).toDate(),
       startTime: map['startTime'] ?? 0,
       endTime: map['endTime'] ?? 0,
-      colorHexCode: map['colorHexCode'] ?? 'd92417', // 기본값: 빨강
+      colorHexCode: map['colorHexCode'] ?? 'd92417',
       createdAt: (map['createdAt'] as Timestamp).toDate(),
+      creator: map['creator'] ?? '알 수 없음', // 👈 [추가] 데이터가 없을 경우 기본값
     );
   }
 
-  // Schedule 객체를 Firestore에 저장할 Map으로 변환
   Map<String, dynamic> toMap() {
     return {
       'content': content,
@@ -41,6 +44,7 @@ class Schedule {
       'endTime': endTime,
       'colorHexCode': colorHexCode,
       'createdAt': Timestamp.fromDate(createdAt),
+      'creator': creator, // 👈 [추가]
     };
   }
 }

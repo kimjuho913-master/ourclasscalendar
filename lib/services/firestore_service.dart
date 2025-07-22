@@ -7,10 +7,18 @@ class FirestoreService {
   FirebaseFirestore.instance.collection('schedules');
   final CollectionReference _colorsCollection =
   FirebaseFirestore.instance.collection('categoryColors');
+  // [추가] allowed_students 컬렉션 참조
+  final CollectionReference _allowedStudentsCollection =
+  FirebaseFirestore.instance.collection('allowed_students');
 
-  // 스케줄 추가 (수정된 부분)
+  // [추가] 학생이 가입 허용 명단에 있는지 확인하는 함수
+  Future<bool> isStudentAllowed(String studentId) async {
+    final doc = await _allowedStudentsCollection.doc(studentId).get();
+    return doc.exists; // 문서가 존재하면 true, 아니면 false 반환
+  }
+
+  // 스케줄 추가
   Future<void> addSchedule(Schedule schedule) {
-    // schedule 객체에 포함된 id를 사용하여 문서를 생성합니다.
     return _schedulesCollection.doc(schedule.id).set(schedule.toMap());
   }
 
@@ -35,8 +43,6 @@ class FirestoreService {
 
   // 특정 날짜의 스케줄 실시간 조회
   Stream<List<Schedule>> watchSchedules(DateTime date) {
-    // 저장된 'date' 필드와 정확히 일치하는 타임스탬프를 쿼리합니다.
-    // date는 이미 UTC 자정 기준이므로 시간대 문제가 발생하지 않습니다.
     return _schedulesCollection
         .where('date', isEqualTo: Timestamp.fromDate(date))
         .orderBy('startTime')
