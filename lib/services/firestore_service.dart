@@ -8,12 +8,12 @@ class FirestoreService {
   final CollectionReference _colorsCollection =
   FirebaseFirestore.instance.collection('categoryColors');
   // [추가] allowed_students 컬렉션 참조
-  final CollectionReference _allowedStudentsCollection =
-  FirebaseFirestore.instance.collection('allowed_students');
+  final CollectionReference _allowedUsersCollection =
+  FirebaseFirestore.instance.collection('allowed_users');
 
   // [추가] 학생이 가입 허용 명단에 있는지 확인하는 함수
-  Future<bool> isStudentAllowed(String studentId) async {
-    final doc = await _allowedStudentsCollection.doc(studentId).get();
+  Future<bool> isUserAllowed(String userId) async {
+    final doc = await _allowedUsersCollection.doc(userId).get();
     return doc.exists; // 문서가 존재하면 true, 아니면 false 반환
   }
 

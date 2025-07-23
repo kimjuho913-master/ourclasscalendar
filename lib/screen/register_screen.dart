@@ -14,15 +14,12 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final FirestoreService _firestoreService = FirestoreService();
-  // [추가] Form의 상태를 관리하기 위한 GlobalKey
   final _formKey = GlobalKey<FormState>();
-  String studentId = '';
+  String userId = '';
   String password = '';
   bool isLoading = false;
 
   void onRegisterPressed() async {
-    // [수정] Form의 유효성을 먼저 검사합니다.
-    // validate()가 false를 반환하면 (validator에서 에러 메시지를 반환하면) 더 이상 진행하지 않습니다.
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -33,31 +30,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     try {
       final bool isAllowed =
-      await _firestoreService.isStudentAllowed(studentId.trim());
+      await _firestoreService.isUserAllowed(userId.trim());
 
       if (!isAllowed) {
-        throw FirebaseAuthException(code: 'student-not-allowed');
+        throw FirebaseAuthException(code: 'user-not-allowed');
       }
 
+      // 1. 사용자 계정을 생성합니다.
+      final userCredential =
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: '${studentId.trim()}@hs.go',
+        email: '23hs${userId.trim()}@cbhs.hs.kr',
         password: password.trim(),
       );
 
+      // [핵심] 생성된 계정으로 인증 이메일을 보냅니다.
+      if (userCredential.user != null) {
+        await userCredential.user!.sendEmailVerification();
+      }
+
+      // 가입 후에는 자동 로그인을 막기 위해 로그아웃 처리합니다.
       await FirebaseAuth.instance.signOut();
 
       if (mounted) {
+        // [수정] 사용자에게 이메일을 확인하라는 안내 메시지를 보여줍니다.
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('회원가입에 성공했습니다! 로그인해주세요.')),
+          const SnackBar(
+            content: Text('회원가입 완료! 학교 이메일을 확인하여 계정을 활성화해주세요.'),
+            duration: Duration(seconds: 5), // 메시지를 더 오래 표시
+          ),
         );
         Navigator.of(context).pop();
       }
     } on FirebaseAuthException catch (e) {
       String message = '회원가입에 실패했습니다.';
-      if (e.code == 'student-not-allowed') {
+      if (e.code == 'user-not-allowed') {
         message = '허용되지 않은 사용자입니다. 관리자에게 문의하세요.';
       } else if (e.code == 'email-already-in-use') {
-        message = '이미 가입된 학번이름입니다.';
+        message = '이미 가입된 학번입니다.';
       } else if (e.code == 'weak-password') {
         message = '비밀번호는 6자 이상이어야 합니다.';
       }
@@ -82,7 +91,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            // [추가] Form 위젯으로 감싸서 유효성 검사를 활성화합니다.
             child: Form(
               key: _formKey,
               child: Column(
@@ -95,17 +103,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                    '학번이름과 사용할 비밀번호를 입력해주세요.',
+                    '학번과 사용할 비밀번호를 입력해주세요.',
                     style: TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 32),
                   CustomTextFormField(
-                    hintText: '학번이름',
-                    onChanged: (value) => studentId = value,
-                    // [추가] 학번이름이 비어있는지 검사합니다.
+                    hintText: '학번',
+                    onChanged: (value) => userId = value,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return '학번이름을 입력해주세요.';
+                        return '학번을 입력해주세요.';
                       }
                       return null;
                     },
@@ -115,7 +122,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     hintText: '비밀번호',
                     onChanged: (value) => password = value,
                     obscureText: true,
-                    // [핵심] 비밀번호 유효성 검사 로직
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return '비밀번호를 입력해주세요.';
@@ -123,7 +129,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       if (value.length < 6) {
                         return '비밀번호는 6자 이상이어야 합니다.';
                       }
-                      if (!RegExp(r'[abcdefghijklmnopqrstuvwxyz]').hasMatch(value)) {
+                      if (!RegExp(r'[abcdefghijklmnopqrstuvwxyz]')
+                          .hasMatch(value)) {
                         return '비밀번호에 영문 소문자가 포함되어야 합니다.';
                       }
                       if (!RegExp(r'[0-9]').hasMatch(value)) {
@@ -132,7 +139,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       if (!RegExp(r'[!@#$%^&*(),.?":{}|<>]').hasMatch(value)) {
                         return '비밀번호에 특수문자가 포함되어야 합니다.';
                       }
-                      return null; // 모든 조건을 만족하면 null을 반환 (에러 없음)
+                      return null;
                     },
                   ),
                   const SizedBox(height: 24),
@@ -141,7 +148,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   else
                     ElevatedButton(
                       onPressed: onRegisterPressed,
-                      style: ElevatedButton.styleFrom(backgroundColor: goodColor),
+                      style:
+                      ElevatedButton.styleFrom(backgroundColor: goodColor),
                       child: const Text('가입하기',
                           style: TextStyle(color: Colors.white)),
                     ),
