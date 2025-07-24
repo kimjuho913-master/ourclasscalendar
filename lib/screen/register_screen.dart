@@ -1,6 +1,7 @@
 import 'package:class_calendar/component/custom_text_form_field.dart';
 import 'package:class_calendar/component/default_layout.dart';
 import 'package:class_calendar/const/colors.dart';
+import 'package:class_calendar/screen/email_verification_screen.dart';
 import 'package:class_calendar/services/firestore_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -36,35 +37,36 @@ class _RegisterScreenState extends State<RegisterScreen> {
         throw FirebaseAuthException(code: 'user-not-allowed');
       }
 
-      // 1. 사용자 계정을 생성합니다.
+      final email = '23hs${userId.trim()}@cbhs.hs.kr';
+      final finalPassword = password.trim();
+
       final userCredential =
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: '23hs${userId.trim()}@cbhs.hs.kr',
-        password: password.trim(),
+        email: email,
+        password: finalPassword,
       );
 
-      // [핵심] 생성된 계정으로 인증 이메일을 보냅니다.
       if (userCredential.user != null) {
         await userCredential.user!.sendEmailVerification();
+      } else {
+        throw Exception('사용자 생성에 실패했습니다.');
       }
 
-      // 가입 후에는 자동 로그인을 막기 위해 로그아웃 처리합니다.
-      await FirebaseAuth.instance.signOut();
-
       if (mounted) {
-        // [수정] 사용자에게 이메일을 확인하라는 안내 메시지를 보여줍니다.
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('회원가입 완료! 학교 이메일을 확인하여 계정을 활성화해주세요.'),
-            duration: Duration(seconds: 5), // 메시지를 더 오래 표시
+        // [수정] EmailVerificationScreen으로 이메일과 비밀번호를 전달합니다.
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => EmailVerificationScreen(
+              email: email,
+              password: finalPassword,
+            ),
           ),
         );
-        Navigator.of(context).pop();
       }
     } on FirebaseAuthException catch (e) {
       String message = '회원가입에 실패했습니다.';
       if (e.code == 'user-not-allowed') {
-        message = '허용되지 않은 사용자입니다. 관리자에게 문의하세요.';
+        message = '허용되지 않은 사용자입니다. 대황개발자 김주호님께 문의하세요.';
       } else if (e.code == 'email-already-in-use') {
         message = '이미 가입된 학번입니다.';
       } else if (e.code == 'weak-password') {
@@ -97,15 +99,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 32),
-                  const Text(
-                    '환영합니다!',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
+                  const Text('환영합니다!', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 8),
-                  const Text(
-                    '학번과 사용할 비밀번호를 입력해주세요.',
-                    style: TextStyle(fontSize: 16),
-                  ),
+                  const Text('학번과 사용할 비밀번호를 입력해주세요.', style: TextStyle(fontSize: 16)),
                   const SizedBox(height: 32),
                   CustomTextFormField(
                     hintText: '학번',
@@ -129,8 +125,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       if (value.length < 6) {
                         return '비밀번호는 6자 이상이어야 합니다.';
                       }
-                      if (!RegExp(r'[abcdefghijklmnopqrstuvwxyz]')
-                          .hasMatch(value)) {
+                      if (!RegExp(r'[abcdefghijklmnopqrstuvwxyz]').hasMatch(value)) {
                         return '비밀번호에 영문 소문자가 포함되어야 합니다.';
                       }
                       if (!RegExp(r'[0-9]').hasMatch(value)) {
@@ -148,10 +143,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   else
                     ElevatedButton(
                       onPressed: onRegisterPressed,
-                      style:
-                      ElevatedButton.styleFrom(backgroundColor: goodColor),
-                      child: const Text('가입하기',
-                          style: TextStyle(color: Colors.white)),
+                      style: ElevatedButton.styleFrom(backgroundColor: goodColor),
+                      child: const Text('가입하기', style: TextStyle(color: Colors.white)),
                     ),
                 ],
               ),

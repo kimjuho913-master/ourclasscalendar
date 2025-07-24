@@ -7,6 +7,7 @@ class DefaultLayout extends StatelessWidget {
   final Widget? bottomNavigationBar;
   final Widget? floatingActionButton;
   final bool? resizeToAvoidBottomInset; // 👈 [추가]
+  final bool showBackButton;
 
   const DefaultLayout({
     required this.child,
@@ -15,6 +16,7 @@ class DefaultLayout extends StatelessWidget {
     this.bottomNavigationBar,
     this.floatingActionButton,
     this.resizeToAvoidBottomInset, // 👈 [추가]
+    this.showBackButton = true,
     Key? key,
   }) : super(key: key);
 
@@ -37,6 +39,7 @@ class DefaultLayout extends StatelessWidget {
       return AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
+        automaticallyImplyLeading: showBackButton,
         title: Text(
           title!,
           style: const TextStyle(
