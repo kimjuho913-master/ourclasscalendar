@@ -24,10 +24,25 @@ void main() async {
   final colors = await firestoreService.getCategoryColors();
   if (colors.isEmpty) {
     const defaultColors = [
-      'D32F2F', 'E84033', 'fa7a35', 'fae500', '22A45D',
-      '0080ff', '000080', 'a020f0', 'fccacb', 'fdbf0f',
-      'fffca1', 'cafca6', 'a6fcce', 'a6f4fc', 'a6d8fc',
-      'a6c0fc', 'a6affc', 'dda6fc', 'fca6ca',
+      'D32F2F',
+      'E84033',
+      'fa7a35',
+      'fae500',
+      '22A45D',
+      '0080ff',
+      '000080',
+      'a020f0',
+      'fccacb',
+      'fdbf0f',
+      'fffca1',
+      'cafca6',
+      'a6fcce',
+      'a6f4fc',
+      'a6d8fc',
+      'a6c0fc',
+      'a6affc',
+      'dda6fc',
+      'fca6ca',
     ];
     await firestoreService.addDefaultColors(defaultColors);
   }
