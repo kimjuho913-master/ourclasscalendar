@@ -25,7 +25,7 @@ Name: "korean"; MessagesFile: "compiler:Languages\Korean.isl"
 
 [Tasks]
 ; --- 설치 옵션: "바탕화면에 바로 가기 만들기" 체크박스를 추가합니다 ---
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: checkedonce
 
 [Files]
 ; --- [가장 중요] Flutter로 빌드한 모든 파일을 설치 폴더로 복사합니다 ---

@@ -137,7 +137,7 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('사용자 정보가 없어 저장할 수 없습니다. 다시 로그인해주세요.')),
+        SnackBar(content: Center(child: Text('사용자 정보가 없어 저장할 수 없습니다. 다시 로그인해주세요.'))),
       );
       return;
     }

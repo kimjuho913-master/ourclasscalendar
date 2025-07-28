@@ -59,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     if (userId.isEmpty || password.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                            content: Text('학번과 비밀번호를 모두 입력해주세요.')),
+                            content: Center(child: Text('학번과 비밀번호를 모두 입력해주세요.'))),
                       );
                       return;
                     }
