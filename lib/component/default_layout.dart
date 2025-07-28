@@ -38,7 +38,7 @@ class DefaultLayout extends StatelessWidget {
             body: Center(
               // ★ 데스크톱에서는 화면 비율을 고정
               child: AspectRatio(
-                aspectRatio: 9 / 20,
+                aspectRatio: 9 / 19.5,
                 // 앱의 실제 내용을 담는 내부 Scaffold
                 child: Scaffold(
                   backgroundColor: backgroundColor ?? Colors.white,
