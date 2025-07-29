@@ -25,11 +25,9 @@ class DefaultLayout extends StatelessWidget {
     // LayoutBuilder를 사용해 현재 레이아웃의 크기를 가져옵니다.
     return LayoutBuilder(
       builder: (context, constraints) {
-        // 모바일과 데스크톱을 나누는 기준점입니다.
-        const double mobileBreakpoint = 600.0;
 
         // 현재 화면의 가로 너비가 기준보다 큰 경우 (데스크톱/태블릿)
-        if (constraints.maxWidth > mobileBreakpoint) {
+        if (constraints.maxWidth > constraints.maxHeight) {
           // 데스크톱용 레이아웃
           return Scaffold(
             backgroundColor: Colors.grey[850], // 바깥 배경색
