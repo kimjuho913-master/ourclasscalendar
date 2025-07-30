@@ -33,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 8.0),
                 const _SubTitle(),
                 FractionallySizedBox(
-                  widthFactor: 0.75,
+                  widthFactor: 0.7,
                   child: Image.asset(
                     'asset/img/logo.png',
                   ),
@@ -59,7 +59,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     if (userId.isEmpty || password.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                            content: Center(child: Text('학번과 비밀번호를 모두 입력해주세요.'))),
+                          content: Center(
+                            child: Text(
+                              '학번과 비밀번호를 모두 입력해주세요.'
+                            )
+                          )
+                        ),
                       );
                       return;
                     }

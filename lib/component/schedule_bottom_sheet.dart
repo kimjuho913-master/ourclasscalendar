@@ -142,7 +142,9 @@ class _ScheduleBottomSheetState extends State<ScheduleBottomSheet> {
       return;
     }
 
-    final creatorName = user.email!.split('@').first;
+    final emailPrefix = user.email!.split('@').first;
+
+    final creatorName = emailPrefix.substring(4);
 
     if (widget.scheduleId == null) {
       final scheduleDate = widget.selectedDate;

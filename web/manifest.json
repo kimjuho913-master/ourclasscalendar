@@ -1,6 +1,6 @@
 {
-    "name": "class_calendar",
-    "short_name": "class_calendar",
+    "name": "우리 반 캘린더",
+    "short_name": "우리 반 캘린더",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
