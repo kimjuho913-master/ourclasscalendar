@@ -5,6 +5,7 @@ import 'package:class_calendar/component/today_banner.dart';
 import 'package:class_calendar/const/colors.dart';
 import 'package:class_calendar/model/schedule.dart';
 import 'package:class_calendar/services/firestore_service.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // 로그아웃을 위해 꼭 필요합니다.
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -27,6 +28,70 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '형석고 3학년 1반 학급 공용 캘린더',
+              style: TextStyle(
+                fontSize: 18.0,
+                fontWeight: FontWeight.w700,
+                color: Colors.black,
+              ),
+            ),
+            Text(
+              'Made by 일일일정',
+              style: TextStyle(
+                fontSize: 12.0,
+                color: grColor,
+                fontWeight: FontWeight.w700,
+              ),
+            )
+          ],
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.logout,
+              color: Colors.black,
+            ),
+            onPressed: () async {
+              final confirm = await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    backgroundColor: Colors.white,
+                    title: const Text("로그아웃 확인"),
+                    content: const Text("정말로 로그아웃하시겠습니까?"),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        style: TextButton.styleFrom(foregroundColor: grColor),
+                        child: const Text("취소", style: TextStyle(color: grColor)),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        style: TextButton.styleFrom(
+                            backgroundColor: goodColor,
+                            foregroundColor: Colors.white),
+                        child: const Text("로그아웃"),
+                      ),
+                    ],
+                  );
+                },
+              );
+
+              if (confirm == true) {
+                FirebaseAuth.instance.signOut();
+              }
+            },
+            tooltip: '로그아웃',
+          ),
+        ],
+      ),
       floatingActionButton: renderFloatingActionButton(),
       body: SafeArea(
         child: StreamBuilder<List<Schedule>>(
@@ -46,28 +111,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
             return Column(
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(top: 15),
-                  child: Column(
-                    children: [
-                      Text(
-                        '형석고 3학년 1반 학급 공용 캘린더',
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      Text(
-                        'Made by 일일일정',
-                        style: TextStyle(
-                          fontSize: 13.0,
-                          color: grColor,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
                 Calendar(
                   selectedDay: selectedDay,
                   focusedDay: focusedDay,
@@ -202,7 +245,6 @@ class _ScheduleList extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
                         Icon(Icons.delete, color: Colors.white),
-                        // SizedBox(width: 8),
                       ],
                     ),
                   ),
