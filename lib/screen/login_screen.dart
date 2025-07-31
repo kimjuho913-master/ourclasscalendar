@@ -63,7 +63,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Text(
                               '학번과 비밀번호를 모두 입력해주세요.'
                             )
-                          )
+                          ),
+                          backgroundColor: Colors.red,
                         ),
                       );
                       return;
@@ -98,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         message = '이메일 인증이 필요합니다. 학교 메일함을 확인해주세요.';
                       }
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(message)),
+                        SnackBar(content: Center(child: Text(message)),backgroundColor: Colors.red,),
                       );
                     }
                   },

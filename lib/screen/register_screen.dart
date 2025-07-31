@@ -73,7 +73,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         message = '비밀번호는 6자 이상이어야 합니다.';
       }
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(message)),
+        SnackBar(content: Center(child: Text(message))),
       );
     } finally {
       if (mounted) {
